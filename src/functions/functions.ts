@@ -1,4 +1,6 @@
-﻿/** @CustomFunction
+﻿/* global CustomFunctions */
+
+/** @CustomFunction
  * @description Increments the cell with a given amount at a specified interval in milliseconds.
  * @param {any[][]} arg1 - The amount to add to the cell value on each increment.
  * @param {any[][]} arg2 - The time in milliseconds to wait before the next increment on the cell.

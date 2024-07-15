@@ -1,34 +1,37 @@
-/*
- * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
- * See LICENSE in the project root for license information.
- */
+import { formulaHandler } from "./formulaHandler";
 
-/* global console, document, Excel, Office */
+/* global console, document, Office */
 
-// The initialize function must be run each time a new page is loaded
-Office.onReady(() => {
-  document.getElementById("sideload-msg").style.display = "none";
-  document.getElementById("app-body").style.display = "flex";
-  document.getElementById("run").onclick = run;
+Office.onReady((info) => {
+  if (info.host === Office.HostType.Excel) {
+    document.getElementById("bind").onclick = bind;
+    document.getElementById("rebind").onclick = rebind;
+    document.getElementById("unbind").onclick = unbind;
+
+    bind();
+  }
 });
 
-export async function run() {
+export async function bind() {
   try {
-    await Excel.run(async (context) => {
-      /**
-       * Insert your Excel code here
-       */
-      const range = context.workbook.getSelectedRange();
+    await formulaHandler.bindExcelEvents();
+  } catch (error) {
+    console.error(error);
+  }
+}
 
-      // Read the range address
-      range.load("address");
+export async function rebind() {
+  try {
+    await formulaHandler.unbindExcelEvents();
+    await formulaHandler.bindExcelEvents();
+  } catch (error) {
+    console.error(error);
+  }
+}
 
-      // Update the fill color
-      range.format.fill.color = "yellow";
-
-      await context.sync();
-      console.log(`The range address was ${range.address}.`);
-    });
+export async function unbind() {
+  try {
+    await formulaHandler.unbindExcelEvents();
   } catch (error) {
     console.error(error);
   }
